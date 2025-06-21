@@ -16,8 +16,5 @@ jobs:
         with:
           node-version: 18
 
-      - name: 📦 Instalar dependências
-        run: npm install
-
       - name: 🚀 Executar os testes Cypress (modo headless)
         run: npx cypress run
