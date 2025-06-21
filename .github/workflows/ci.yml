@@ -1,7 +1,7 @@
 name: 🚀 Run Cypress API Tests (Manual + API Local via Docker)
 
 on:
-  workflow_dispatch:  # 🔥 Executar manualmente
+  workflow_dispatch:  # 🔥 Execução manual
 
 jobs:
   run-tests:
@@ -11,33 +11,30 @@ jobs:
       - name: ⬇️ Checkout do projeto de automação
         uses: actions/checkout@v4
 
-      - name: ⚙️ Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: 🐳 Checkout e subir API via Docker Compose
+      - name: 🐳 Checkout da API
         uses: actions/checkout@v4
         with:
-          repository: diogoProgrammerFullStack/helpdesk-api
+          repository: diogooliveira/helpdesk-api  # 🔥 Ajusta para seu repo real
+          token: ${{ secrets.GH_PAT }}            # 🔐 Se for privado
           path: ./api
 
-      - name: 🐳 Build e subir API
+      - name: 🐳 Subir API com Docker Compose
         run: |
           cd api
           docker compose up -d
 
-      - name: ⏳ Aguardar API ficar disponível
+      - name: ⏳ Aguardar a API ficar disponível
         run: |
           echo "Aguardando a API subir..."
-          until curl -s http://localhost:3000/health || curl -s http://localhost:3000/users; do
-            sleep 3
+          until curl -s http://localhost:3000/users; do
+            echo "Aguardando API subir..."
+            sleep 5
           done
 
       - name: 🚀 Executar os testes Cypress
         uses: cypress-io/github-action@v6
         with:
-          wait-on: 'http://localhost:3000'
+          wait-on: 'http://localhost:3000/users'
           wait-on-timeout: 60
 
       - name: 🧹 Derrubar containers
