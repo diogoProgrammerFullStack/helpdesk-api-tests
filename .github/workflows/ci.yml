@@ -1,35 +1,36 @@
 name: 🚀 Run Cypress API Tests (Manual + API Local via Docker)
 
 on:
-  workflow_dispatch:  # 🔥 Execução manual
+  workflow_dispatch:
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout do projeto de automação
+      - name: ⬇️ Checkout do repositório de automação
         uses: actions/checkout@v4
 
       - name: 🐳 Checkout da API
         uses: actions/checkout@v4
         with:
-          repository: diogooliveira/helpdesk-api  # 🔥 Ajusta para seu repo real
-          token: ${{ secrets.GH_PAT }}            # 🔐 Se for privado
-          path: ./api
+          repository: diogooliveira/helpdesk-api  # 🔥 Seu repo da API
+          ref: main                               # 🔥 Branch
+          path: api                               # 🔥 Pasta onde será clonado
 
-      - name: 🐳 Subir API com Docker Compose
+      - name: 🐳 Build e subir API com Docker Compose
         run: |
           cd api
           docker compose up -d
 
-      - name: ⏳ Aguardar a API ficar disponível
+      - name: ⏳ Esperar a API subir
         run: |
-          echo "Aguardando a API subir..."
+          echo "Aguardando API..."
           until curl -s http://localhost:3000/users; do
-            echo "Aguardando API subir..."
+            echo "API não respondeu... aguardando..."
             sleep 5
           done
+          echo "API está no ar!"
 
       - name: 🚀 Executar os testes Cypress
         uses: cypress-io/github-action@v6
