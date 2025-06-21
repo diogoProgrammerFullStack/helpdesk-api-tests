@@ -19,7 +19,7 @@ jobs:
       - name: 🐳 Checkout e subir API via Docker Compose
         uses: actions/checkout@v4
         with:
-          repository: usuario/nome-do-repo-da-api
+          repository: diogoProgrammerFullStack/helpdesk-api
           path: ./api
 
       - name: 🐳 Build e subir API
