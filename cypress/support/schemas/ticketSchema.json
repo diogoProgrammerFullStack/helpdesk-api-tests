@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["id", "userId", "description", "status", "createdAt"],
+  "properties": {
+    "id": { "type": "integer" },
+    "userId": { "type": "integer" },
+    "description": { "type": "string" },
+    "status": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
