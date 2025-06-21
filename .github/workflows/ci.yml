@@ -1,14 +1,14 @@
-name: 🚀 Run Cypress API Tests (Manual)
+name: 🚀 Run Cypress API Tests (Manual + API Local via Docker)
 
 on:
-  workflow_dispatch:  # 👉 Habilita execução manual no GitHub Actions
+  workflow_dispatch:  # 🔥 Executar manualmente
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout do código
+      - name: ⬇️ Checkout do projeto de automação
         uses: actions/checkout@v4
 
       - name: ⚙️ Setup Node.js
@@ -16,5 +16,29 @@ jobs:
         with:
           node-version: 18
 
-      - name: 🚀 Executar os testes Cypress (modo headless)
+      - name: 🐳 Checkout e subir API via Docker Compose
+        uses: actions/checkout@v4
+        with:
+          repository: usuario/nome-do-repo-da-api
+          path: ./api
+
+      - name: 🐳 Build e subir API
+        run: |
+          cd api
+          docker compose up -d
+
+      - name: ⏳ Aguardar API ficar disponível
+        run: |
+          echo "Aguardando a API subir..."
+          until curl -s http://localhost:3000/health || curl -s http://localhost:3000/users; do
+            sleep 3
+          done
+
+      - name: 🚀 Executar os testes Cypress
         uses: cypress-io/github-action@v6
+        with:
+          wait-on: 'http://localhost:3000'
+          wait-on-timeout: 60
+
+      - name: 🧹 Derrubar containers
+        run: cd api && docker compose down
