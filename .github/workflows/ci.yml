@@ -1,0 +1,23 @@
+name: 🚀 Run Cypress API Tests (Manual)
+
+on:
+  workflow_dispatch:  # 👉 Habilita execução manual no GitHub Actions
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout do código
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: 📦 Instalar dependências
+        run: npm install
+
+      - name: 🚀 Executar os testes Cypress (modo headless)
+        run: npx cypress run
