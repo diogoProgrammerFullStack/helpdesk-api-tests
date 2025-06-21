@@ -17,4 +17,4 @@ jobs:
           node-version: 18
 
       - name: 🚀 Executar os testes Cypress (modo headless)
-        run: npx cypress run
+        uses: cypress-io/github-action@v6
